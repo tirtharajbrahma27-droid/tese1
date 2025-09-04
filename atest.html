@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Mini Social – Single Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --brand: #1877f2;
+      --brand-d: #0f66d6;
+      --bg: #f7f7f7;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #666;
+      --border: #e7e7e7;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text);}
+    header { background: var(--brand); color: #fff; padding: 12px 16px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10;}
+    header a.brand { color: #fff; font-weight: 700; text-decoration: none; font-size: 18px; }
+    header nav { display: flex; gap: 10px; margin-left: 10px; }
+    header nav.right { margin-left: auto; }
+    header a.nav { color: #fff; text-decoration: none; font-weight: 600; padding: 6px 8px; border-radius: 6px; }
+    header a.nav:hover { background: rgba(255,255,255,.15); }
+    main { max-width: 980px; margin: 20px auto; padding: 0 12px; }
+    section.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.04); }
+    h2, h3 { margin: 0 0 10px; }
+    p { color: var(--muted); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="search"], input[type="file"] {
+      width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; background: #fff;
+    }
+    button, .btn {
+      display: inline-block; padding: 10px 14px; background: var(--brand); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+      text-decoration: none; text-align: center;
+    }
+    button:hover, .btn:hover { background: var(--brand-d); }
+    .btn-outline { background: #e7f0ff; color: var(--brand-d); }
+    .flash { background: #fff3cd; color: #664d03; border: 1px solid #ffecb5; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+    .card-lite { background: #fafafa; border: 1px solid #eee; border-radius: 10px; padding: 8px; }
+    img.photo { width: 100%; height: 170px; object-fit: cover; border-radius: 8px; display: block; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .spacer { height: 6px; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hide { display: none !important; }
+    @media (max-width: 700px) {
+      .row, .row-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="#" class="brand" id="nav-brand">Mini Social</a>
+    <nav>
+      <a href="#" class="nav" id="nav-home">Home</a>
+      <a href="#" class="nav" id="nav-search">Search</a>
+    </nav>
+    <nav class="right" id="nav-right-guest">
+      <a href="#" class="nav" id="nav-login">Login</a>
+      <a href="#" class="nav" id="nav-register">Register</a>
+    </nav>
+    <nav class="right hide" id="nav-right-user">
+      <a href="#" class="nav" id="nav-upload">Upload</a>
+      <a href="#" class="nav" id="nav-logout">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <div id="flash" class="flash hide"></div>
+
+    <section id="section-home" class="card">
+      <h2>Welcome 👋</h2>
+      <p>Register, log in with your phone + DOB, search users by name, and upload photos.</p>
+      <div class="actions">
+        <a class="btn" href="#" id="cta-register">Create account</a>
+        <a class="btn btn-outline" href="#" id="cta-login">Log in</a>
+      </div>
+    </section>
+
+    <section id="section-register" class="card hide">
+      <h2>Create your account</h2>
+      <form id="form-register" autocomplete="off">
+        <div class="row">
+          <div>
+            <label>Name</label>
+            <input type="text" name="name" placeholder="Full name" required />
+          </div>
+          <div>
+            <label>Date of birth</label>
+            <input type="date" name="dob" required />
+          </div>
+          <div>
+            <label>Phone</label>
+            <input type="tel" name="phone" placeholder="+1 555 123 4567" required />
+          </div>
+          <div>
+            <label>Email</label>
+            <input type="email" name="email" placeholder="you@example.com" required />
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <p class="muted">For this demo, your password is your DOB. Don’t use real personal info.</p>
+        <button type="submit">Register</button>
+      </form>
+    </section>
+
+    <section id="section-login" class="card hide">
+      <h2>Log in</h2>
+      <form id="form-login" autocomplete="off">
+        <div class="row">
+          <div>
+            <label>Phone</label>
+            <input type="tel" name="phone" required />
+          </div>
+          <div>
+            <label>Date of birth (password)</label>
+            <input type="date" name="dob" required />
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <button type="submit">Log in</button>
+      </form>
+    </section>
+
+    <section id="section-dashboard" class="card hide">
+      <h2>Hi <span id="dash-name"></span> 👋</h2>
+      <div class="spacer"></div>
+
+      <form id="form-search-inline" class="actions" role="search">
+        <input type="search" name="q" placeholder="Search users by name" style="flex:1; min-width: 200px;" />
+        <button type="submit">Search</button>
+      </form>
+
+      <div class="spacer"></div>
+      <h3>Upload a photo</h3>
+      <form id="form-upload" enctype="multipart/form-data">
+        <input type="file" name="photo" accept="image/png,image/jpeg,image/gif" required />
+        <button type="submit">Upload</button>
+      </form>
+      <p class="muted">Max ~10MB per photo. Allowed: JPG, JPEG, PNG, GIF.</p>
+
+      <div class="spacer"></div>
+      <h3>Your photos</h3>
+      <div id="grid-my-photos" class="grid"></div>
+      <div id="empty-my-photos" class="muted">You haven't uploaded any photos yet.</div>
+    </section>
+
+    <section id="section-search" class="card hide">
+      <h2>Search users</h2>
+      <form id="form-search">
+        <input type="search" name="q" placeholder="Type a name..." />
+        <button type="submit">Search</button>
+      </form>
+      <div class="spacer"></div>
+      <div id="search-results"></div>
+    </section>
+
+    <section id="section-profile" class="card hide">
+      <h2 id="profile-name"></h2>
+      <div id="profile-meta" class="muted"></div>
+      <div class="spacer"></div>
+      <h3>Photos</h3>
+      <div id="grid-profile-photos" class="grid"></div>
+      <div id="empty-profile-photos" class="muted">No photos yet.</div>
+    </section>
+  </main>
+
+  <script>
+    // Basic data handling: users in localStorage, photos in IndexedDB
+    const LS_USERS = 'ms_users';
+    const LS_USER_SEQ = 'ms_user_seq';
+    const LS_CURRENT = 'ms_current_user';
+    const DB_NAME = 'ms_photos_db';
+    const DB_VERSION = 1;
+
+    let db = null;
+
+    // Utility: flash messages
+    function flash(msg, ms = 3000) {
+      const box = document.getElementById('flash');
+      box.textContent = msg;
+      box.classList.remove('hide');
+      if (ms) {
+        setTimeout(() => { box.classList.add('hide'); box.textContent = ''; }, ms);
+      }
+    }
+
+    function hideFlash() {
+      const box = document.getElementById('flash');
+      box.classList.add('hide');
+      box.textContent = '';
+    }
+
+    // Sections + nav
+    const sections = ['home','register','login','dashboard','search','profile'];
+    function showSection(name) {
+      sections.forEach(s => {
+        document.getElementById('section-'+s).classList.toggle('hide', s !== name);
+      });
+      updateNav();
+    }
+
+    function updateNav() {
+      const currentUser = getCurrentUser();
+      const guestNav = document.getElementById('nav-right-guest');
+      const userNav = document.getElementById('nav-right-user');
+      if (currentUser) {
+        userNav.classList.remove('hide');
+        guestNav.classList.add('hide');
+      } else {
+        guestNav.classList.remove('hide');
+        userNav.classList.add('hide');
+      }
+    }
+
+    // LocalStorage: users
+    function loadUsers() {
+      try { return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); }
+      catch { return []; }
+    }
+    function saveUsers(users) {
+      localStorage.setItem(LS_USERS, JSON.stringify(users));
+    }
+    function nextUserId() {
+      let seq = parseInt(localStorage.getItem(LS_USER_SEQ) || '0', 10);
+      seq += 1;
+      localStorage.setItem(LS_USER_SEQ, String(seq));
+      return seq;
+    }
+    function setCurrentUserId(id) {
+      if (id == null) localStorage.removeItem(LS_CURRENT);
+      else localStorage.setItem(LS_CURRENT, String(id));
+    }
+    function getCurrentUserId() {
+      const v = localStorage.getItem(LS_CURRENT);
+      return v ? parseInt(v, 10) : null;
+    }
+    function getCurrentUser() {
+      const id = getCurrentUserId();
+      if (!id) return null;
+      return loadUsers().find(u => u.id === id) || null;
+    }
+    function normalizePhone(p) {
+      return (p || '').replace(/\D/g, '');
+    }
+    function findUserByPhone(phoneDigits) {
+      const users = loadUsers();
+      return users.find(u => u.phone === phoneDigits) || null;
+    }
+    function findUsersByName(q) {
+      const users = loadUsers();
+      if (!q) return [];
+      const qq = q.trim().toLowerCase();
+      return users
+        .filter(u => u.name.toLowerCase().includes(qq))
+        .sort((a,b) => a.name.localeCompare(b.name))
+        .slice(0, 100);
+    }
+
+    // IndexedDB helpers for photos
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = (e) => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains('photos')) {
+            const store = db.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
+            store.createIndex('by_user', 'userId', { unique: false });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    async function ensureDB() {
+      if (!db) db = await openDB();
+      return db;
+    }
+    async function addPhoto(userId, file) {
+      await ensureDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction('photos', 'readwrite');
+        const store = tx.objectStore('photos');
+        const rec = {
+          userId: userId,
+          blob: file,           // store the File/Blob directly
+          filename: file.name,
+          type: file.type,
+          size: file.size,
+          uploadedAt: Date.now()
+        };
+        const req = store.add(rec);
+        req.onsuccess = () => resolve({ ...rec, id: req.result });
+        req.onerror = () => reject(req.error);
+      });
+    }
+    async function getPhotosByUser(userId) {
+      await ensureDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction('photos', 'readonly');
+        const store = tx.objectStore('photos');
+        const idx = store.index('by_user');
+        const req = idx.getAll(IDBKeyRange.only(userId));
+        req.onsuccess = () => {
+          const arr = req.result || [];
+          arr.sort((a,b) => b.uploadedAt - a.uploadedAt);
+          resolve(arr);
+        };
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    // Rendering helpers
+    function revokeObjectUrls(container) {
+      const imgs = container.querySelectorAll('img[data-object-url]');
+      imgs.forEach(img => {
+        const u = img.getAttribute('data-object-url');
+        if (u) URL.revokeObjectURL(u);
+      });
+    }
+    function renderPhotoGrid(container, photos) {
+      revokeObjectUrls(container);
+      container.textContent = '';
+      photos.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card-lite';
+        const img = document.createElement('img');
+        img.className = 'photo';
+        const url = URL.createObjectURL(p.blob);
+        img.src = url;
+        img.setAttribute('data-object-url', url);
+        const meta = document.createElement('div');
+        meta.className = 'muted';
+        const dt = new Date(p.uploadedAt);
+        meta.textContent = `${p.filename} • ${dt.toLocaleString()}`;
+        card.appendChild(img);
+        card.appendChild(meta);
+        container.appendChild(card);
+      });
+    }
+
+    // Dashboard refresh
+    async function refreshDashboard() {
+      const user = getCurrentUser();
+      if (!user) return;
+      document.getElementById('dash-name').textContent = user.name;
+      const photos = await getPhotosByUser(user.id);
+      const grid = document.getElementById('grid-my-photos');
+      const empty = document.getElementById('empty-my-photos');
+      if (photos.length) {
+        renderPhotoGrid(grid, photos);
+        empty.classList.add('hide');
+      } else {
+        grid.textContent = '';
+        empty.classList.remove('hide');
+      }
+    }
+
+    // Profile view
+    async function openProfile(userId) {
+      const users = loadUsers();
+      const user = users.find(u => u.id === userId);
+      if (!user) {
+        flash('User not found');
+        return;
+      }
+      document.getElementById('profile-name').textContent = user.name;
+      const created = new Date(user.createdAt);
+      document.getElementById('profile-meta').textContent = `Member since ${created.toISOString().slice(0,10)}`;
+      const photos = await getPhotosByUser(user.id);
+      const grid = document.getElementById('grid-profile-photos');
+      const empty = document.getElementById('empty-profile-photos');
+      if (photos.length) {
+        renderPhotoGrid(grid, photos);
+        empty.classList.add('hide');
+      } else {
+        grid.textContent = '';
+        empty.classList.remove('hide');
+      }
+      showSection('profile');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Form handlers
+    document.getElementById('form-register').addEventListener('submit', (e) => {
+      e.preventDefault();
+      hideFlash();
+      const form = e.currentTarget;
+      const name = form.name.value.trim();
+      const dob = form.dob.value.trim(); // yyyy-mm-dd
+      const phone = normalizePhone(form.phone.value);
+      const email = form.email.value.trim().toLowerCase();
+      if (!name || !dob || !phone || !email) {
+        flash('All fields are required.');
+        return;
+      }
+      if (phone.length < 7) { flash('Phone number looks too short.'); return; }
+      if (!/^\S+@\S+\.\S+$/.test(email)) { flash('Invalid email.'); return; }
+
+      const users = loadUsers();
+      if (users.some(u => u.phone === phone)) { flash('This phone number is already registered.'); return; }
+      if (users.some(u => u.email === email)) { flash('This email is already registered.'); return; }
+
+      const id = nextUserId();
+      const user = { id, name, dob, phone, email, password: dob, createdAt: new Date().toISOString() };
+      users.push(user);
+      saveUsers(users);
+      form.reset();
+      flash('Registration successful. Please log in with your phone + DOB.');
+      showSection('login');
+    });
+
+    document.getElementById('form-login').addEventListener('submit', (e) => {
+      e.preventDefault();
+      hideFlash();
+      const form = e.currentTarget;
+      const phone = normalizePhone(form.phone.value);
+      const dob = form.dob.value.trim();
+      if (!phone || !dob) { flash('Phone and DOB are required.'); return; }
+      const user = findUserByPhone(phone);
+      if (user && user.password === dob) {
+        setCurrentUserId(user.id);
+        flash(`Welcome, ${user.name}!`, 2000);
+        showSection('dashboard');
+        refreshDashboard();
+        form.reset();
+      } else {
+        flash('Invalid phone or DOB.');
+      }
+    });
+
+    document.getElementById('nav-logout').addEventListener('click', (e) => {
+      e.preventDefault();
+      setCurrentUserId(null);
+      flash('Logged out.', 1500);
+      showSection('home');
+    });
+
+    // Upload
+    const ALLOWED_TYPES = new Set(['image/jpeg','image/png','image/gif']);
+    const MAX_SIZE = 10 * 1024 * 1024;
+    document.getElementById('form-upload').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideFlash();
+      const user = getCurrentUser();
+      if (!user) { flash('Please log in.'); return; }
+      const fileInput = e.currentTarget.photo;
+      const file = fileInput.files[0];
+      if (!file) { flash('No file selected.'); return; }
+      if (!ALLOWED_TYPES.has(file.type)) { flash('Invalid file type. Allowed: JPG, JPEG, PNG, GIF.'); return; }
+      if (file.size > MAX_SIZE) { flash('File too large. Max 10MB.'); return; }
+      try {
+        await addPhoto(user.id, file);
+        await refreshDashboard();
+        fileInput.value = '';
+        flash('Photo uploaded!', 1500);
+      } catch (err) {
+        console.error(err);
+        flash('Upload failed.');
+      }
+    });
+
+    // Search (page)
+    function renderSearchResults(list) {
+      const el = document.getElementById('search-results');
+      el.textContent = '';
+      if (!list.length) {
+        el.innerHTML = '<p class="muted">No users found.</p>';
+        return;
+      }
+      const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+      ul.style.margin = '0';
+      list.forEach(u => {
+        const li = document.createElement('li');
+        li.style.padding = '8px 0';
+        li.style.borderBottom = '1px solid #eee';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.textContent = u.name;
+        a.addEventListener('click', (e) => { e.preventDefault(); openProfile(u.id); });
+        li.appendChild(a);
+        el.appendChild(li);
+      });
+    }
+
+    document.getElementById('form-search').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = e.currentTarget.q.value;
+      const results = findUsersByName(q);
+      renderSearchResults(results);
+    });
+
+    // Inline search on dashboard
+    document.getElementById('form-search-inline').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = e.currentTarget.q.value;
+      showSection('search');
+      document.querySelector('#form-search input[name="q"]').value = q;
+      const results = findUsersByName(q);
+      renderSearchResults(results);
+    });
+
+    // Nav actions
+    document.getElementById('nav-home').addEventListener('click', (e) => {
+      e.preventDefault();
+      const u = getCurrentUser();
+      showSection(u ? 'dashboard' : 'home');
+      if (u) refreshDashboard();
+    });
+    document.getElementById('nav-brand').addEventListener('click', (e) => {
+      e.preventDefault();
+      const u = getCurrentUser();
+      showSection(u ? 'dashboard' : 'home');
+      if (u) refreshDashboard();
+    });
+    document.getElementById('nav-search').addEventListener('click', (e) => {
+      e.preventDefault();
+      showSection('search');
+    });
+    document.getElementById('nav-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      showSection('login');
+    });
+    document.getElementById('nav-register').addEventListener('click', (e) => {
+      e.preventDefault();
+      showSection('register');
+    });
+    document.getElementById('nav-upload').addEventListener('click', (e) => {
+      e.preventDefault();
+      showSection('dashboard');
+      document.getElementById('form-upload').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // CTA buttons
+    document.getElementById('cta-register').addEventListener('click', (e) => { e.preventDefault(); showSection('register'); });
+    document.getElementById('cta-login').addEventListener('click', (e) => { e.preventDefault(); showSection('login'); });
+
+    // Init
+    (async function init() {
+      try { await ensureDB(); } catch (e) { console.warn('IndexedDB unavailable', e); }
+      updateNav();
+      const u = getCurrentUser();
+      if (u) { showSection('dashboard'); refreshDashboard(); }
+      else { showSection('home'); }
+    })();
+  </script>
+</body>
+</html>
